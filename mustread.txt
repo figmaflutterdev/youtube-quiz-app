@@ -1,0 +1,44 @@
+create a . env file in frontend folder inside src folder 
+paste this
+
+VITE_SUPABASE_URL=https://xhkfxhxoisyfurwbhgla.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_2iGzpxkoxGPxRc4wPTPovw_ZWuwUcC7
+GEMINI_API_KEY="your_gemini_api_key"
+
+create a file in src names supabase_config.js and paste this 
+
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+export const supabase = createClient(supabaseUrl, supabaseKey);
+
+below is an example on how to use api's
+
+import { useState, useEffect } from 'react'
+import { supabase } from './utils/supabase'
+
+export default function App() {
+  const [todos, setTodos] = useState([])
+
+  useEffect(() => {
+    async function getTodos() {
+      const { data: todos } = await supabase.from('todos').select()
+
+      if (todos) {
+        setTodos(todos)
+      }
+    }
+
+    getTodos()
+  }, [])
+
+  return (
+    <ul>
+      {todos.map((todo) => (
+        <li key={todo.id}>{todo.name}</li>
+      ))}
+    </ul>
+  )
+}
